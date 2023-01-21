@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en-CA" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Areal Interpolation in Python Using Tobler - CUOSGwiki</title>
+<script>document.documentElement.className="client-js";RLCONF={"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":0,"wgPageName":"Areal_Interpolation_in_Python_Using_Tobler","wgTitle":"Areal Interpolation in Python Using Tobler","wgCurRevisionId":18535,"wgRevisionId":18535,"wgArticleId":4070,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":[],"wgBreakFrames":!1,"wgPageContentLanguage":"en-ca","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Areal_Interpolation_in_Python_Using_Tobler","wgRelevantArticleId":4070,"wgRequestId":"2bb3a02b1d6cf034e1936909","wgCSPNonce":!1,
+"wgIsProbablyEditable":!1,"wgRelevantPageIsProbablyEditable":!1,"wgRestrictionEdit":[],"wgRestrictionMove":[]};RLSTATE={"site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"loading","user.tokens":"loading","ext.pygments":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.toc.styles":"ready","mediawiki.skinning.interface":"ready","mediawiki.skinning.content.externallinks":"ready","skins.monobook.responsive":"ready"};RLPAGEMODULES=["site","mediawiki.page.startup","mediawiki.page.ready","mediawiki.toc","mediawiki.searchSuggest","skins.monobook.mobile"];</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.implement("user.options@mdxdf",function($,jQuery,require,module){/*@nomin*/mw.user.options.set({"variant":"en-ca"});
+});mw.loader.implement("user.tokens@tffin",function($,jQuery,require,module){/*@nomin*/mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
+});});</script>
+<link rel="stylesheet" href="/CUOSGwiki/load.php?lang=en-ca&amp;modules=ext.pygments%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.skinning.content.externallinks%7Cmediawiki.skinning.interface%7Cmediawiki.toc.styles%7Cskins.monobook.responsive&amp;only=styles&amp;skin=monobook"/>
+<script async="" src="/CUOSGwiki/load.php?lang=en-ca&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=monobook"></script>
+<!--[if lt IE 9]><link rel="stylesheet" href="/CUOSGwiki/skins/MonoBook/resources/screen-desktop.css?74a6a" media="screen"/><![endif]--><!--[if IE 6]><link rel="stylesheet" href="/CUOSGwiki/skins/MonoBook/resources/IE60Fixes.css?1208f" media="screen"/><![endif]--><!--[if IE 7]><link rel="stylesheet" href="/CUOSGwiki/skins/MonoBook/resources/IE70Fixes.css?4e4d4" media="screen"/><![endif]-->
+<meta name="generator" content="MediaWiki 1.34.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/CUOSGwiki/opensearch_desc.php" title="CUOSGwiki (en-ca)"/>
+<link rel="EditURI" type="application/rsd+xml" href="https://dges.carleton.ca/CUOSGwiki/api.php?action=rsd"/>
+<link rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="alternate" type="application/atom+xml" title="CUOSGwiki Atom feed" href="/CUOSGwiki/index.php?title=Special:RecentChanges&amp;feed=atom"/>
+<!--[if lt IE 9]><script src="/CUOSGwiki/resources/lib/html5shiv/html5shiv.js"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Areal_Interpolation_in_Python_Using_Tobler rootpage-Areal_Interpolation_in_Python_Using_Tobler skin-monobook action-view"><div id="globalWrapper"><div id="column-content"><div id="content" class="mw-body" role="main"><a id="top"></a><div class="mw-indicators mw-body-content">
+</div>
+<h1 id="firstHeading" class="firstHeading" lang="en-CA">Areal Interpolation in Python Using Tobler</h1><div id="bodyContent" class="mw-body-content"><div id="siteSub">From CUOSGwiki</div><div id="contentSub" lang="en-CA" dir="ltr"></div><div id="jump-to-nav"></div><a href="#column-one" class="mw-jump-link">Jump to navigation</a><a href="#searchInput" class="mw-jump-link">Jump to search</a><!-- start content --><div id="mw-content-text" lang="en-CA" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><div class="cell markdown">
+<p><span id="introduction"></span>
+</p>
+<div id="toc" class="toc"><input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none" /><div class="toctitle" lang="en-CA" dir="ltr"><h2>Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Getting_Started"><span class="tocnumber">1.1</span> <span class="toctext">Getting Started</span></a>
+<ul>
+<li class="toclevel-3 tocsection-3"><a href="#Option_1:_Non-Interactive_Copy"><span class="tocnumber">1.1.1</span> <span class="toctext">Option 1: Non-Interactive Copy</span></a></li>
+<li class="toclevel-3 tocsection-4"><a href="#Option_2:_Run_the_Tutorial_Through_Binder"><span class="tocnumber">1.1.2</span> <span class="toctext">Option 2: Run the Tutorial Through Binder</span></a></li>
+<li class="toclevel-3 tocsection-5"><a href="#Option_3:_Install_a_Local_Copy_of_the_Tutorial"><span class="tocnumber">1.1.3</span> <span class="toctext">Option 3: Install a Local Copy of the Tutorial</span></a>
+<ul>
+<li class="toclevel-4 tocsection-6"><a href="#Step_1:_Download_the_Files"><span class="tocnumber">1.1.3.1</span> <span class="toctext">Step 1: Download the Files</span></a></li>
+<li class="toclevel-4 tocsection-7"><a href="#Step_2:_Create_Environment"><span class="tocnumber">1.1.3.2</span> <span class="toctext">Step 2: Create Environment</span></a></li>
+<li class="toclevel-4 tocsection-8"><a href="#Step_3:_Open_the_Tutorial"><span class="tocnumber">1.1.3.3</span> <span class="toctext">Step 3: Open the Tutorial</span></a></li>
+<li class="toclevel-4 tocsection-9"><a href="#Step_4:_Remove_the_Tutorial"><span class="tocnumber">1.1.3.4</span> <span class="toctext">Step 4: Remove the Tutorial</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-10"><a href="#Data_Sources"><span class="tocnumber">1.1.4</span> <span class="toctext">Data Sources</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#Areal_Interpolation_in_Python_Using_Tobler_-_Tutorial"><span class="tocnumber">2</span> <span class="toctext">Areal Interpolation in Python Using Tobler - Tutorial</span></a>
+<ul>
+<li class="toclevel-2 tocsection-12"><a href="#Import_Modules_and_Packages"><span class="tocnumber">2.1</span> <span class="toctext">Import Modules and Packages</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Part_1_-_Areal_Interpolation_of_Census_Population_Data"><span class="tocnumber">2.2</span> <span class="toctext">Part 1 - Areal Interpolation of Census Population Data</span></a>
+<ul>
+<li class="toclevel-3 tocsection-14"><a href="#Step_1:_Read_The_Data"><span class="tocnumber">2.2.1</span> <span class="toctext">Step 1: Read The Data</span></a></li>
+<li class="toclevel-3 tocsection-15"><a href="#Step_2:_Inspect_the_Data"><span class="tocnumber">2.2.2</span> <span class="toctext">Step 2: Inspect the Data</span></a>
+<ul>
+<li class="toclevel-4 tocsection-16"><a href="#Additional_Methods_for_Inspecting_Data"><span class="tocnumber">2.2.2.1</span> <span class="toctext">Additional Methods for Inspecting Data</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-17"><a href="#Step_3:_Areal_Interpolation_of_Census_Data"><span class="tocnumber">2.2.3</span> <span class="toctext">Step 3: Areal Interpolation of Census Data</span></a>
+<ul>
+<li class="toclevel-4 tocsection-18"><a href="#Area_Weighted_Interpolation"><span class="tocnumber">2.2.3.1</span> <span class="toctext">Area Weighted Interpolation</span></a></li>
+<li class="toclevel-4 tocsection-19"><a href="#Dasymetric_Interpolation_of_Census_Tracts_and_Dissemination_Areas"><span class="tocnumber">2.2.3.2</span> <span class="toctext">Dasymetric Interpolation of Census Tracts and Dissemination Areas</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-20"><a href="#Step_4:_Assess_the_Interpolation_Results"><span class="tocnumber">2.2.4</span> <span class="toctext">Step 4: Assess the Interpolation Results</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-21"><a href="#Part_2_-_Areal_Interpolation_of_Synthetic_Population_Data"><span class="tocnumber">2.3</span> <span class="toctext">Part 2 - Areal Interpolation of Synthetic Population Data</span></a>
+<ul>
+<li class="toclevel-3 tocsection-22"><a href="#Step_1:_Create_the_Synthetic_Population_Points"><span class="tocnumber">2.3.1</span> <span class="toctext">Step 1: Create the Synthetic Population Points</span></a></li>
+<li class="toclevel-3 tocsection-23"><a href="#Step_2:_Count_the_Synthetic_Population_Points"><span class="tocnumber">2.3.2</span> <span class="toctext">Step 2: Count the Synthetic Population Points</span></a></li>
+<li class="toclevel-3 tocsection-24"><a href="#Step_3:_Areal_Interpolation_of_the_Synthetic_Population_Data"><span class="tocnumber">2.3.3</span> <span class="toctext">Step 3: Areal Interpolation of the Synthetic Population Data</span></a>
+<ul>
+<li class="toclevel-4 tocsection-25"><a href="#Area_Weighted_Interpolation_of_Census_Tracts_and_Dissemination_Areas"><span class="tocnumber">2.3.3.1</span> <span class="toctext">Area Weighted Interpolation of Census Tracts and Dissemination Areas</span></a></li>
+<li class="toclevel-4 tocsection-26"><a href="#Dasymetric_Interpolation_of_Census_Tracts_and_Dissemination_Areas_2"><span class="tocnumber">2.3.3.2</span> <span class="toctext">Dasymetric Interpolation of Census Tracts and Dissemination Areas</span></a></li>
+</ul>
+</li>
+<li class="toclevel-3 tocsection-27"><a href="#Step_4:_Assess_the_Interpolation_Results_2"><span class="tocnumber">2.3.4</span> <span class="toctext">Step 4: Assess the Interpolation Results</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-28"><a href="#Conclusion"><span class="tocnumber">2.4</span> <span class="toctext">Conclusion</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Introduction">Introduction</span></h1>
+<p>Areal interpolation, in vector-based GIS data models, is the process where the attributes of one set of polygons are interpolated to a different set of polygons. There are many applications for this process, for example, the interpolation of census data from census tracts to neighborhoods, or the interpolation of aggregated environment data from one set of geographic boundaries to another.
+</p><p>Tobler, a component of the <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pysal.org/">Python Spatial Analysis Library</a> (PySAL) is a package of Python functions designed to perform and support areal interpolation. Visit Tobler's <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pysal.org/tobler/index.html">website</a> and <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://github.com/pysal/tobler">github page</a> for the official documentation.
+</p><p>In this tutorial we will use Tobler to perform two different methods of areal interpolation on two different scales of source data. In Part 1 we will use areal weighted and dasymetric methods to interpolate 2016 Canadian census data from Ottawa census tracts and dissemination areas to Ottawa neighborhoods. In part 2 we will do same but with synthetic population data instead of real data. By using this synthetic dataset we will know exactly what the results should be and thus more accurately assess the effect of the methods and scale.
+</p><p>The intended audience of this tutorial are students who have some prior experience using Python, JupyterLab, Jupyter Notebooks, Pandas, and GeoPandas. That being said, the code should work as-is, providing all students with the opportunity to follow along through the steps of the analysis. If you are new to Jupyter notebooks and need help running code cells or performing other basic operations then check out <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://jupyter.org/try">Project Jupyter's introductory tutorials</a>. I have included links to the different packages' documentation throughout the tutorial and feel free to insert or split cells at any point in order to inspect any intermediate data.
+</p>
+<blockquote><p><b>Disclaimer:</b> The tutorial and all related documents have been created as a school assignment for Carleton University's GEOM 4008 – Advanced Topics in Geographic Information Systems course. Please forgive any errors, whether simple typographic ones or more critical errors in logic or syntax. Whether you happened upon this document through its <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://github.com/johnofoster/areal_interpolation_tutorial">github repository</a> or Carleton University's <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://dges.carleton.ca/CUOSGwiki/index.php/Main_Page">Open Source GIS Tutorials</a> page and want to propose any changes, feel free to submit a pull request to this tutorial's github repository or find me at my <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://twitter.com/FrothyFoster">Twitter account</a>.
+</p></blockquote>
+<p><span id="getting-started"></span>
+</p>
+<h2><span class="mw-headline" id="Getting_Started">Getting Started</span></h2>
+<p>There are a couple of different ways to access this tutorial. If you wish to interact with it by editing and running the code then the simplest method is through Binder. This service will allow you to run the tutorial notebook in JupyterLab without needing to download anything or creating an environment. Alternatively, you can download the files from the github repository, set up the environment, and run the notebook locally. If a static copy of the tutorial is all you want then feel free to read the through the copy here at at Carleton University's Open Source GIS Tutorials page.Here are the instructions for these three options:
+</p><p><span id="option-1-non-interactive-copy"></span>
+</p>
+<h3><span class="mw-headline" id="Option_1:_Non-Interactive_Copy">Option 1: Non-Interactive Copy</span></h3>
+<p>As mentioned, this tutorial was created as a student project for a Carleton University geomatics course. It has been converted to a MediaWiki page and uploaded to the page you are currently viewing.
+</p><p><span id="option-2-run-the-tutorial-through-binder"></span>
+</p>
+<h3><span class="mw-headline" id="Option_2:_Run_the_Tutorial_Through_Binder">Option 2: Run the Tutorial Through Binder</span></h3>
+<p>Please follow these instructions if you want to use an online interactive copy of the tutorial:
+</p>
+<ol><li>Open <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://mybinder.org/v2/gh/johnofoster/areal_interpolation_tutorial/HEAD">this link</a> in a new tab to access a Binder copy of the tutorial repository.</li>
+<li>While the Binder service is loading, you can access a non-interactive preview of the notebook (<code>areal_interp_tutorial.ipynb</code>) through nbviewer at the bottom of the page.</li>
+<li>After loading, a JupyterLab session will launch in your browser. This session will use the tutorial environment so all dependencies should work.</li>
+<li>In the File Browser pane on the left, double-click <code>areal_interp_tutorial.ipynb</code> to open the tutorial notebook.</li>
+<li>With the tutorial now open as an interactive Jupyter notebook you can run and modify each code cell and any output.</li></ol>
+<p><span id="option-3-install-a-local-copy-of-the-tutorial"></span>
+</p>
+<h3><span class="mw-headline" id="Option_3:_Install_a_Local_Copy_of_the_Tutorial">Option 3: Install a Local Copy of the Tutorial</span></h3>
+<p>Please follow these instructions if you want to use a local interactive copy of the tutorial:
+</p><p><span id="step-1-download-the-files"></span>
+</p>
+<h4><span class="mw-headline" id="Step_1:_Download_the_Files">Step 1: Download the Files</span></h4>
+<p>If you have git installed:
+</p>
+<ol><li>Open a terminal window</li>
+<li>Change the current working directory to the location where you want the tutorial to reside</li>
+<li>Clone the repo by running: <code>$ git clone <a target="_blank" rel="nofollow noreferrer noopener" class="external free" href="https://github.com/johnofoster/areal_interpolation_tutorial">https://github.com/johnofoster/areal_interpolation_tutorial</a></code></li></ol>
+<p>Otherwise, simply download the zip file of the tutorial from <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://github.com/johnofoster/areal_interpolation_tutorial/archive/refs/heads/main.zip">this link</a> and unzip it into a suitable working directory on your computer.
+</p><p><span id="step-2-create-environment"></span>
+</p>
+<h4><span class="mw-headline" id="Step_2:_Create_Environment">Step 2: Create Environment</span></h4>
+<p>This tutorial uses Python 3.9, Conda, JupyterLab, and a number of Python packages.
+</p><p>If you don't already have an Anaconda distribution then you can find it <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www.anaconda.com/products/individual">here</a>. For a very lightweight alternative to Anaconda that only contains Conda, Python, and a few essential packages then check out Miniconda <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://docs.conda.io/en/latest/miniconda.html">here</a>. After installing either please follow these instructions:
+</p>
+<ol><li>Open a terminal window</li>
+<li>Change the current working directory to tutorial's directory</li>
+<li>Create the environment by running: <code>$ conda env create -- file environment.yml</code></li>
+<li>It might take a while to build the environment so go grab a cup of your favorite beverage.</li></ol>
+<p>This will create a Conda environment containing the necessary packages to run this tutorial.
+</p><p><span id="step-3-open-the-tutorial"></span>
+</p>
+<h4><span class="mw-headline" id="Step_3:_Open_the_Tutorial">Step 3: Open the Tutorial</span></h4>
+<p>Now that you have downloaded the tutorial files and created the Conda environment please follow these instructions to launch it:
+</p>
+<ol><li>Open a terminal window</li>
+<li>Change the current working directory to the tutorial's directory</li>
+<li>Activate the environment: <code>$ conda activate areal_interp_env</code></li>
+<li>Start a local JupyterLab session in your web browser: <code>$ Jupyter Lab</code></li>
+<li>In the File Browser pane on the left, double-click <code>areal_interp_tutorial.ipynb</code> to open the tutorial notebook.</li>
+<li>With the tutorial now open you can run and modify each code cell in order to see the output.</li></ol>
+<p><span id="step-4-remove-the-tutorial"></span>
+</p>
+<h4><span class="mw-headline" id="Step_4:_Remove_the_Tutorial">Step 4: Remove the Tutorial</span></h4>
+<p>Once you are done with tutorial you might want to remove it. Simply delete the directory you placed it in and then remove the Conda environment by running the following terminal command: <code>$ conda env remove --name areal_interp_env</code>.
+</p><p><span id="data-sources"></span>
+</p>
+<h3><span class="mw-headline" id="Data_Sources">Data Sources</span></h3>
+<p>The data for this tutorial has been preprocessed for your convenience and can be found in <code>data/</code>. All of this data comes from free and open sources. Links to the original geometry and attributes can be found below along with notes regarding the preprocessing that was performed.
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th width="20%">
+</th>
+<th width="20%">Geometry source
+</th>
+<th width="20%">Geometry transformations
+</th>
+<th width="20%">Attributes source
+</th>
+<th width="20%">Attributes transformations
+</th></tr>
+<tr>
+<th>Census Tracts
+</th>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/bound-limit-2016-eng.cfm">StatCan 2016 Census - Census Tracts Cartographic Boundary File</a>
+</td>
+<td>Extracted the census tracts falling within the City of Ottawa boundary and reprojected to WGS 84 UTM 18N
+</td>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/page_dl-tc.cfm?Lang=E&amp;">StatCan 2016 Census: Census metropolitan areas (CMAs), tracted census agglomerations (CAs) and census tracts (CTs)</a>
+</td>
+<td>Extracted the 'Population, 2016' data ('member ID 1') for the City of Ottawa census tracts and joined them to the census tracts geometry
+</td></tr>
+<tr>
+<th>Dissemination Areas
+</th>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/bound-limit-2016-eng.cfm">StatCan 2016 Census - Dissemination Areas Cartographic Boundary File</a>
+</td>
+<td>Extracted the dissemination areas falling within the City of Ottawa boundary and reprojected to WGS 84 UTM 18N
+</td>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/page_dl-tc.cfm?Lang=E&amp;">Canada, provinces, territories, census divisions (CDs), census subdivisions (CSDs) and dissemination areas (DAs) - Ontario only</a>
+</td>
+<td>Extracted the 'Population, 2016' data ('member ID 1) for the City of Ottawa dissemination areas and joined them to the dissemination areas geometry
+</td></tr>
+<tr>
+<th>Neighborhoods
+</th>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://open.ottawa.ca/datasets/ottawa::ottawa-neighbourhood-study-ons-neighbourhood-boundaries-gen-2/about">Ottawa Neighbourhood Study (ONS) - Neighbourhood Boundaries Gen 2</a>
+</td>
+<td>Reprojected to WGS 84 UTM 18N
+</td>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://open.ottawa.ca/datasets/ottawa::ottawa-neighbourhood-study-ons-neighbourhood-boundaries-gen-2/about">Ottawa Neighbourhood Study (ONS) - Neighbourhood Boundaries Gen 2</a>
+</td>
+<td>Extracted the neighbourhood names ('NAMES') and estimated population fields ('POPEST')
+</td></tr>
+<tr>
+<th>Landcover
+</th>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://open.canada.ca/data/en/dataset/4e615eae-b90c-420b-adee-2ca35896caf6">Government of Canada - 2015 Land Cover of Canada</a>
+</td>
+<td>Clipped to the City of Ottawa's extent
+</td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr>
+<th>Zoning
+</th>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://data1-esrica-ncr.opendata.arcgis.com/datasets/esrica-ncr::city-of-ottawa-zoning/about?layer=3">City of Ottawa - Zoning</a>
+</td>
+<td>Reprojected to WGS 84 UTM 18N
+</td>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://data1-esrica-ncr.opendata.arcgis.com/datasets/esrica-ncr::city-of-ottawa-zoning/about?layer=3">City of Ottawa - Zoning</a>
+</td>
+<td>Extracted the main zones
+</td></tr>
+<tr>
+<th>Synthetic Points
+</th>
+<td>John Foster (tutorial author)
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td></tr></tbody></table>
+<p><br />
+</p>
+</div>
+<div class="cell markdown">
+<p><span id="areal-interpolation-in-python-using-tobler---tutorial"></span>
+</p>
+<h1><span class="mw-headline" id="Areal_Interpolation_in_Python_Using_Tobler_-_Tutorial">Areal Interpolation in Python Using Tobler - Tutorial</span></h1>
+<p><span id="import-modules-and-packages"></span>
+</p>
+<h3><span class="mw-headline" id="Import_Modules_and_Packages">Import Modules and Packages</span></h3>
+<p>This tutorial requires the use of a number of modules. Tobler, Pandas, GeoPandas, and Plotly will perform most of the work but see the comments below for why we are importing each.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Import modules</span>
+<span class="c1"># --------------</span>
+
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>                     <span class="c1"># For operations on GeoDataFrames</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display_html</span>    <span class="c1"># To display DataFrames side-by-side</span>
+<span class="kn">import</span> <span class="nn">json</span>                                 <span class="c1"># For plotting geometries with Plotly</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>             <span class="c1"># General purpose plotting</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>                          <span class="c1"># Statistical functions and classes</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>                         <span class="c1"># For operations on DataFrames</span>
+<span class="kn">import</span> <span class="nn">plotly.express</span> <span class="kn">as</span> <span class="nn">px</span>                 <span class="c1"># For interactive plotting</span>
+<span class="kn">import</span> <span class="nn">tobler</span>                               <span class="c1"># For the areal interpolation functions</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>                     <span class="c1"># For the linear regression function</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span>          <span class="c1"># For the point geometry class</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="part-1---areal-interpolation-of-census-population-data"></span>
+</p>
+<h2><span class="mw-headline" id="Part_1_-_Areal_Interpolation_of_Census_Population_Data">Part 1 - Areal Interpolation of Census Population Data</span></h2>
+</div>
+<div class="cell markdown">
+<p><span id="step-1-read-the-data"></span>
+</p>
+<h3><span class="mw-headline" id="Step_1:_Read_The_Data">Step 1: Read The Data</span></h3>
+<p>Before performing any analysis we need read the data files from our <code>data/</code> directory and assign them to variables. We will do this with GeoPandas' <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://geopandas.org/en/stable/docs/reference/api/geopandas.read_file.html"><code>read.file()</code></a> method.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Read the data</span>
+<span class="c1"># -------------</span>
+
+<span class="c1"># City of Ottawa census tracts data</span>
+<span class="n">ct_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;data/ottawa_ct_pop_2016.gpkg&#39;</span><span class="p">)</span>
+
+<span class="c1"># City of Ottawa dissemination areas data</span>
+<span class="n">da_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;data/ottawa_da_pop_2016.gpkg&#39;</span><span class="p">)</span>
+
+<span class="c1"># City of Ottawa neighborhoods data</span>
+<span class="n">nbhd_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;data/ottawa_neighborhoods.gpkg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="step-2-inspect-the-data"></span>
+</p>
+<h3><span class="mw-headline" id="Step_2:_Inspect_the_Data">Step 2: Inspect the Data</span></h3>
+<p>We can use Pandas' <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sample.html"><code>df.sample()</code></a> method to inspect a small random samples of the census tracts, dissemination areas, and neighborhoods GeoDataFrames (while ignoring their geometry columns). This will show us the column names and give us some examples of how the values of each are formatted. Because the output of cells in Jupyter notebooks are rendered in HTML we can use Pandas' <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html">DataFrame styling methods</a> to display several DataFrames side-by-side. While this takes more code than simply using the <code>print()</code> function or displaying the results of <code>sample()</code>, it facilitates comparisons and saves vertical space.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Compare random samples from each GeoDataFrame</span>
+<span class="c1"># ---------------------------------------------</span>
+
+<span class="c1"># Assign a sampling of each GeoDataFrame to a DataFrame</span>
+<span class="n">df1</span> <span class="o">=</span> <span class="n">ct_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">da_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">df3</span> <span class="o">=</span> <span class="n">nbhd_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Style the DataFrames and include captions with the number of rows</span>
+<span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;style=&#39;display:inline; padding:10px&#39;&quot;</span>
+<span class="n">df1_styled</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_table_attributes</span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Census Tracts, {len(ct_gdf)} rows&#39;</span><span class="p">)</span>
+<span class="n">df2_styled</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_table_attributes</span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Dissemination Areas, {len(da_gdf)} rows&#39;</span><span class="p">)</span>
+<span class="n">df3_styled</span> <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_table_attributes</span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Neighborhoods, {len(nbhd_gdf)} rows&#39;</span><span class="p">)</span>
+
+<span class="c1"># Display the three DataFrames</span>
+<span class="n">display_html</span><span class="p">(</span><span class="n">df1_styled</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span> <span class="o">+</span> <span class="n">df2_styled</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span> <span class="o">+</span> <span class="n">df3_styled</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">(),</span> <span class="n">raw</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><a href="/CUOSGwiki/index.php/File:1_compare_random_samples.png" class="image"><img alt="1 compare random samples.png" src="/CUOSGwiki/images/0/0d/1_compare_random_samples.png" decoding="async" width="1180" height="181" /></a>
+</p><p>From this we can see that the census tracts and neighborhoods have roughly similar population values but the dissemination areas are quite a bit smaller.
+</p><p>For a quick spatial inspection let's plot the geometries of each GeoDataFrame next to each other using Matplotlib's <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html">subplots</a> and GeoPandas' <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.plot.html"><code>plot()</code></a> methods. This will reveal the scale and shape of the geometries that we are working with.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Plot the target and source geometries</span>
+<span class="c1"># -------------------------------------</span>
+
+<span class="c1"># Create subplots; set their size and padding</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Plot the Ottawa census tracts figure</span>
+<span class="n">ct_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Source 1: Ottawa Census Tracts&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="c1"># Ottawa dissemination areas figure</span>
+<span class="n">da_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Source 2: Ottawa Dissemination Areas&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="c1"># Ottawa neighborhoods figure</span>
+<span class="n">nbhd_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Target: Ottawa Neighborhoods&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:2_plot_the_geometries.png" class="image"><img alt="2 plot the geometries.png" src="/CUOSGwiki/images/thumb/e/ea/2_plot_the_geometries.png/1200px-2_plot_the_geometries.png" decoding="async" width="1200" height="354" srcset="/CUOSGwiki/images/e/ea/2_plot_the_geometries.png 1.5x" /></a>
+</p>
+<div class="cell markdown">
+<p><span id="additional-methods-for-inspecting-data"></span>
+</p>
+<h4><span class="mw-headline" id="Additional_Methods_for_Inspecting_Data">Additional Methods for Inspecting Data</span></h4>
+<p>The following Pandas and GeoPandas methods are great ways to inspect DataFrames and GeoDataFrames.
+</p>
+<ul><li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.info.html"><code>df.info()</code></a>: Information about the DataFrame/GeoDataFrame such as column names, data types, and length</li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.info.html"><code>df.head()</code></a>: First n rows of the DataFrame/GeoDataFrame (defaults to 10 rows)</li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.tail.html"><code>df.tail()</code></a>: Last n rows of the DataFrame/GeoDataFrame (defaults to 10 rows)</li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sample.html"><code>df.sample()</code></a>: Random sample of n rows of the DataFrame/GeoDataFrame (defaults to 1 rows)</li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.explore.html"><code>gdf.explore()</code></a>: Interactive map of a GeoDataFrame</li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://geopandas.org/en/stable/docs/user_guide/projections.html"><code>gdf.crs</code></a>: Coordinate reference system information of a GeoDataFrame</li></ul>
+<p>The DataFrame (<code>df</code>) methods also work on GeoDataFrames (<code>gdf</code>) but <code>explore()</code> only works with GeoDataFrames. Follow their links to see the documentation as their outputs can be controlled by passing different arguments to them.
+</p><p>The cell below contains these data inspection methods. Just replace <code>df</code> or <code>gdf</code> before the dot notation with the DataFrame or GeoDataFrame's name that you want to inspect. For example:
+</p>
+<ul><li><code>ct_gdf.info()</code> - shows info about the census tracts GeoDataFrame</li>
+<li><code>da_gdf.explore(column='da_pop_2016')</code> - displays an interactive map of the dissemination areas with a colormap of the population column</li></ul>
+<p>Alternatively, feel free to insert or split cells at any point in this tutorial in order to inspect intermediate data. These methods will really help to reveal exactly what is going on.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Data inspection methods</span>
+<span class="c1"># ----------------</span>
+
+<span class="c1"># Uncomment individual lines below and replace `df` or `gdf` with the name of the variable</span>
+<span class="c1"># DataFrame (df) methods work on GeoDataFrames (gdf) but not the other way around</span>
+
+<span class="c1"># df.info()</span>
+<span class="c1"># df.head()</span>
+<span class="c1"># df.tail(5)</span>
+<span class="c1"># df.sample(15)</span>
+<span class="c1"># gdf.explore()</span>
+<span class="c1"># gdf.crs</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="step-3-areal-interpolation-of-census-data"></span>
+</p>
+<h3><span class="mw-headline" id="Step_3:_Areal_Interpolation_of_Census_Data">Step 3: Areal Interpolation of Census Data</span></h3>
+<p>Now that we have an understanding of the data we're working with we can move on to the area weighted and dasymetric interpolation.
+</p><p><br />
+</p>
+</div>
+<div class="cell markdown">
+<p><span id="area-weighted-interpolation"></span>
+</p>
+<h4><span class="mw-headline" id="Area_Weighted_Interpolation">Area Weighted Interpolation</span></h4>
+<p>Area weighted interpolation works by intersecting the source and target geometries, calculating the areal weights (i.e. the proportion a source geometry is covered by each given target geometry), and then allocating a proportional amount of the variable from the source to the targets. Please refer to Tobler's documentation of the <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pysal.org/tobler/generated/tobler.area_weighted.area_interpolate.html"><code>tobler.area_weighted.area_interpolate()</code></a> function for a mathematical description and help with the parameters.
+</p><p>The first thing to consider is whether the variable to be interpolated is extensive or intensive. An extensive variable is one that depends on the size of the sample (e.g. population counts) while an intensive variable does not (e.g. population density). In this tutorial we will only be working with extensive variables (population counts) but it's worth noting that Tobler's interpolation methods can handle both types through the use of different parameters.
+</p><p>As mentioned, the areal interpolation operation will be performed twice: first with the census tracts as the source data, then with the dissemination areas. This will allow us to compare the results of these different source geometries to see if there's any benefit gained by using smaller census geographies (i.e. dissemination areas) as the source.
+</p><p>To use the <code>tobler.area_weighted.area_interpolate()</code> function we will pass source and target GeoDataFrames to it along with the column name of the extensive variable. The extensive variable will then be interpolated from the source geometry to the target geometry. The result will be a GeoDataFrame containing the target geometries and interpolated values of the extensive variable. After running these cells there will be no output but the results will be saved to the <code>ct_area_interp_gdf</code> and <code>da_area_interp_gdf</code> variables. These will be plotted once all four interpolation operations have been completed.
+</p><p>It's important to note that these three spatial dataset have already been reprojected into the WGS 84 / UTM 18N (EPSG:32618) CRS. If you use Tobler with your own GeoDataFrames it's recommended to explicitly reproject the data into an appropriate UTM zone beforehand, even though Tobler will try to do this automatically. Reprojecting a GeoDataFrame is easily accomplished with the <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.to_crs.html"><code>gdf.to_crs()</code></a> method.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Area weighted interpolation: census tracts to neighborhoods</span>
+<span class="c1"># -----------------------------------------------------------</span>
+
+<span class="n">ct_area_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">area_weighted</span><span class="o">.</span><span class="n">area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">ct_gdf</span><span class="p">,</span> 
+                                                        <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_gdf</span><span class="p">,</span>
+                                                        <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">ct_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ct_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">ct_area_interp_gdf</span> <span class="o">=</span> <span class="n">ct_area_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">:</span><span class="s1">&#39;ct_area_interp_est&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Area weighted interpolation: dissemination areas to neighborhoods</span>
+<span class="c1"># -----------------------------------------------------------------</span>
+
+<span class="n">da_area_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">area_weighted</span><span class="o">.</span><span class="n">area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">da_gdf</span><span class="p">,</span> 
+                                                        <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_gdf</span><span class="p">,</span>
+                                                        <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">da_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">da_area_interp_gdf</span> <span class="o">=</span> <span class="n">da_area_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">:</span><span class="s1">&#39;da_area_interp_est&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="dasymetric-interpolation-of-census-tracts-and-dissemination-areas"></span>
+</p>
+<h4><span class="mw-headline" id="Dasymetric_Interpolation_of_Census_Tracts_and_Dissemination_Areas">Dasymetric Interpolation of Census Tracts and Dissemination Areas</span></h4>
+<p>Dasymetric interpolation, or masked area weighted interpolation, incorporates secondary information to help refine the spatial distribution of the variable. For example, the extent of census tracts may include large portions of land that are uninhabited (e.g. parks, fields, water, etc.). Secondary information about the census tracts' land cover is used to mask out those uninhabited areas which don't contain the extensive variable. Area weighted interpolation is then applied to the masked census tracts and the results should be more accurate than simple area weighted interpolation on its own. This can be done by clipping the census tracts using another set of appropriate polygons(e.g. land cover polygons, municipal zoning, etc.) and then running the areal interpolation function, but Tobler includes a function to do this automatically using a land cover raster as the secondary information. Please refer to Tobler's documentation of the <code>tobler.dasymetric.masked_area_interpolate()</code>](<a target="_blank" rel="nofollow noreferrer noopener" class="external free" href="https://pysal.org/tobler/generated/tobler.dasymetric.masked_area_interpolate.html#tobler.dasymetric.masked_area_interpolate">https://pysal.org/tobler/generated/tobler.dasymetric.masked_area_interpolate.html#tobler.dasymetric.masked_area_interpolate</a>) function for help with the parameters.
+</p><p>The land cover raster that we will use comes from the <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://open.canada.ca/data/en/dataset/4e615eae-b90c-420b-adee-2ca35896caf6">2015 Land Cover of Canada</a>. This 30 m spatial resolution land cover product is produced every 5 years and covers the whole country. Tobler's dasymetric interpolation function will automatically clip the raster to the extent of the source data (City of Ottawa) but I have already clipped it to reduce the file-size and processing time.
+</p><p>The path of the land cover raster and the pixel value(s) of the land cover classes that contain dwellings are passed to the function along with the source and target GeoDataFrames, and the column name of the extensive variable. The result is a GeoDataFrame made up of the target geometries with interpolated values for the extensive variable.
+</p><p>For the same reason as before, we will perform the dasymetric interpolation twice: first with the census tracts as the source data, and then with the dissemination areas. <code>masked_area_interpolate()</code> will throw some warnings but just ignore them. The length of time it takes to run each of these cells on my computer has been included for your reference.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Dasymetric interpolation: census tracts + urban landover to neighborhoods</span>
+<span class="c1">#--------------------------------------------------------------------------</span>
+
+<span class="c1"># Perform dasymetric interpolation</span>
+<span class="n">ct_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">dasymetric</span><span class="o">.</span><span class="n">masked_area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">ct_gdf</span><span class="p">,</span> 
+                                                            <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_gdf</span><span class="p">,</span>
+                                                            <span class="n">raster</span><span class="o">=</span><span class="s1">&#39;data/ottawa_landcover.tif&#39;</span><span class="p">,</span>
+                                                            <span class="n">codes</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">],</span>
+                                                            <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">ct_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ct_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">ct_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">ct_dasy_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_pop_2016&#39;</span><span class="p">:</span><span class="s1">&#39;ct_dasy_interp_est&#39;</span><span class="p">})</span>
+
+<span class="c1"># ~30 s ; ignore warnings</span>
+</pre></div>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Dasymetric interpolation: dissemination areas + urban landover to neighborhoods</span>
+<span class="c1">#------------------------------------------------------------------------</span>
+
+<span class="c1"># Perform dasymetric interpolation</span>
+<span class="n">da_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">dasymetric</span><span class="o">.</span><span class="n">masked_area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">da_gdf</span><span class="p">,</span> 
+                                                            <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_gdf</span><span class="p">,</span>
+                                                            <span class="n">raster</span><span class="o">=</span><span class="s1">&#39;data/ottawa_landcover.tif&#39;</span><span class="p">,</span>
+                                                            <span class="n">codes</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">],</span>
+                                                            <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">da_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">da_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">da_dasy_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">:</span><span class="s1">&#39;da_dasy_interp_est&#39;</span><span class="p">})</span>
+
+<span class="c1"># ~1.5 mins : ignore warnings</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="step-4-assess-the-interpolation-results"></span>
+</p>
+<h3><span class="mw-headline" id="Step_4:_Assess_the_Interpolation_Results">Step 4: Assess the Interpolation Results</span></h3>
+<p>Because the Ottawa Neighbourhood Study data came with a population estimate for each neighborhood (<code>nbhd_pop_est</code>) we can compare those original estimated values against the interpolated values. That being said, it's important to note that the accuracy of this assessment will be very limited for a number of reasons:
+</p>
+<ol><li>Metadata associated with the Ottawa neighborhood survey data does not specify the year of their population estimates. This data was first published to the Open Ottawa data portal on November 25, 2019 and then updated on June 2, 2021. The census tract and dissemination area population data comes from the 2016 census.</li>
+<li>Metadata associated with the Ottawa neighborhood survey data does not specify the methodology they used for estimating the neighborhood populations. Perhaps it comes from an areal interpolation method similar to what we are using or perhaps from a higher resolution data set that is not public (e.g. size of each households).</li>
+<li>The Ottawa neighborhood survey data indicates that the 'Beechwood Cemetery' and 'Notre-Dame Cemetery' neighborhoods have populations of 139 and 17, respectively, despite no evidence of residences within them.</li>
+<li>The sum of all the neighborhood population estimates is 867146 while the census_tracts' sum is 934243. These last two points suggest that these neighborhood population estimates are the result of interpolation from an unknown dataset (2011 census data perhaps?).</li></ol>
+<p>Despite these issues we will go ahead and use these estimates to assess the interpolation results. We will do the following:
+</p>
+<ol><li>Merge the interpolation results with the neighborhood population estimates so we can compare a sample of the results</li>
+<li>Perform a statistical assessment of the interpolation results</li>
+<li>Visually assess the percent error of each neighborhood (interpolated population vs <code>nbhd_pop_est</code>) as a map</li>
+<li>Create a 1:1 scatter plot of the interpolation results against the neighborhood population estimates</li>
+<li>Discuss the results</li></ol>
+<p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Merge the results for comparison</span>
+<span class="c1">#---------------------------------</span>
+
+<span class="c1"># Create a list of the GeoDataFrames (dropping the redundant geometry)</span>
+<span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="n">nbhd_gdf</span><span class="p">,</span>
+        <span class="n">ct_area_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),</span>
+        <span class="n">ct_dasy_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),</span>
+        <span class="n">da_area_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),</span>
+        <span class="n">da_dasy_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">)]</span>
+
+<span class="c1"># Concatenate the GeoDataFrames</span>
+<span class="n">interp_results_gdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">objs</span><span class="o">=</span><span class="n">dfs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># View a sample of the interpolation results GeoDataFrame (without the geometry column)</span>
+<span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:3_sample_merged_results.png" class="image"><img alt="3 sample merged results.png" src="/CUOSGwiki/images/8/8b/3_sample_merged_results.png" decoding="async" width="950" height="298" /></a>
+</p>
+<div class="cell markdown">
+<p>Looking at this sample we can see that the different interpolation methods and source data have yielded results that look roughly in line with the neighborhood population estimates that came from the Ottawa Neighbourhood Study data (<code>nbhd_pop_est</code>).
+</p><p>Let's continue with our evaluation while not forgetting that the neighborhood population estimates have some issues. We will begin by defining some functions to calculate percent error, root mean square error, normalized square error, mean bias error, mean absolute error, and r value. There are 3rd party modules that contain functions to perform these calculations but defining our own is a good exercise.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Define functions to assess the results</span>
+<span class="c1"># --------------------------------------</span>
+
+<span class="c1"># Percent error</span>
+<span class="k">def</span> <span class="nf">percent_error</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Return Percent Error where estimated and expected are numeric or array-like&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(((</span><span class="n">estimated</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span> <span class="o">/</span> <span class="n">expected</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Root mean square error</span>
+<span class="k">def</span> <span class="nf">rmse</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Return Root Mean Square Error where estimated and expected are array-like&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">estimated</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># Normalized root mean square error based on standard deviation</span>
+<span class="k">def</span> <span class="nf">nrmse</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Return Normalized Root Mean Square Error where estimated and expected are array-like&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">estimated</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">estimated</span><span class="p">)</span>
+
+<span class="c1"># Mean bias error</span>
+<span class="k">def</span> <span class="nf">mbe</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Return Mean Bias Error where estimated and expected are array-like&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">estimated</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span>
+
+<span class="c1"># Mean absolute error</span>
+<span class="k">def</span> <span class="nf">mae</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Return Mean Mean Absolute Error where estimated and expected are array-like&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">estimated</span> <span class="o">-</span> <span class="n">expected</span><span class="p">))</span>
+
+<span class="c1"># r value</span>
+<span class="k">def</span> <span class="nf">r_value</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Return r value where estimated and expected are array-like.&#39;&#39;&#39;</span>
+
+    <span class="c1"># Get the r_value by unpacking the results from SciPy&#39;s linregress() function</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">r_value</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r_value</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p>We will now use those functions to generate statistics on the four sets of interpolation results. The percent error values are concatenated to the <code>interp_results_gdf</code> so we can plot maps showing the percent error of each neighborhood. The other statistics are placed into their own DataFrame so we can assess them in a tabular format.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Calculate statistics on the interpolation results</span>
+<span class="c1"># -------------------------------------------------</span>
+
+<span class="c1"># Assign the interpolation results columns to their own variables for clarity</span>
+<span class="n">ct_area_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_area_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: census tracts | method: area weighted</span>
+<span class="n">ct_dasy_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_dasy_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: census tracts  method: dasymetric</span>
+<span class="n">da_area_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_area_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: dissemination areas | method: area weighted</span>
+<span class="n">da_dasy_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_dasy_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: dissemination areas | method: dasymetric</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;nbhd_pop_est&#39;</span><span class="p">]</span>          <span class="c1"># Source: neighborhoods</span>
+
+<span class="c1"># Create new columns in interp_results_gdf to represent percent error</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_area_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_dasy_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_area_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_dasy_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Create a DataFrame containing the other statistics</span>
+<span class="n">interp_stats_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Interpolation Method&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Area Weighted&#39;</span><span class="p">,</span><span class="s1">&#39;Area Weighted&#39;</span><span class="p">,</span>
+                                                        <span class="s1">&#39;Dasymetric&#39;</span><span class="p">,</span> <span class="s1">&#39;Dasymetric&#39;</span><span class="p">],</span>
+                                <span class="s1">&#39;Source Geographies&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Census Tracts&#39;</span><span class="p">,</span> <span class="s1">&#39;Dissemination Areas&#39;</span><span class="p">,</span>
+                                                       <span class="s1">&#39;Census Tracts&#39;</span><span class="p">,</span> <span class="s1">&#39;Dissemination Areas&#39;</span><span class="p">],</span>
+                                <span class="s1">&#39;RMSE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">rmse</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">rmse</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">rmse</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">rmse</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;NRMSE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">nrmse</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">nrmse</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">nrmse</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">nrmse</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>            
+                                <span class="s1">&#39;MBE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">mbe</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mbe</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mbe</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mbe</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;MAE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">mae</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mae</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mae</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mae</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">r_value</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;r2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">r_value</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">]})</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Display the DataFrame containing the statistics</span>
+<span class="n">interp_stats_df</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:4_stats.png" class="image"><img alt="4 stats.png" src="/CUOSGwiki/images/9/91/4_stats.png" decoding="async" width="700" height="141" /></a>
+</p>
+<div class="cell markdown">
+<p>From these statistics it's pretty clear that, when comparing the results from the same source data, the dasymetric method is more effective than the area weighted method. This is shown by the lower error values (as represented by the RMSE, NRMSE, and MAE) and higher correlations (r values) achieved by the dasymetric method.
+</p><p>Interestingly, these statistics also show that using the relatively small dissemination areas as the source data yields the lowest errors and highest correlations - regardless of the interpolation method. This makes sense, as the dissemination areas are much smaller than the census tracts, giving a higher spatial resolution of data for the re-aggregation of the extensive variable from the source to the target geometries. The 'masking' approach that the dasymetric method uses can be seen as an attempt to mimic a higher spatial resolution source dataset, in both cases improving the results compared to the simple area weighted method.
+</p><p>Positive MBE values for all four interpolation results show that all four interpolation results are coming out higher than the neighborhood population estimates. As previously discussed, this is due to a higher total population in the census data (934243) than in the neighborhood data (867146). It's too bad these neighborhood estimates aren't closer to the census data as that would help to make this assessment more credible.
+</p><p>Let's see if a visual assessment of the results line up with this statistical one. Plotly offers a very powerful set of plotting tools which render spatial and non-spatial data as interactive figures. There are simpler ways to plot this with less code but the interactive nature of these Plotly figures is really great for exploratory data analysis. Before creating the Plotly choropleth facet plots the data needs to be reworked into a specific format. The geometries have be supplied in the GeoJson format and the values have to be melted into a single column with an additional column providing labels.
+</p><p>Check out these links for information on the Pandas <code>df.melt()</code> method and Plotly choropleth and facet plots:
+</p>
+<ul><li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/docs/reference/api/pandas.melt.html"><code>df.melt()</code> documentation</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://plotly.com/python/choropleth-maps/">Plotly Choropleth Maps</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://plotly.github.io/plotly.py-docs/generated/plotly.express.choropleth.html"><code>px.choropleth()</code> documentation</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://plotly.com/python/facet-plots/">Plotly Facet Plots</a></li></ul>
+<p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Plot the Percent Error of the four results using a Plotly Facet Map</span>
+
+<span class="c1"># --------------------------------------------------------------------------------</span>
+
+<span class="c1"># Convert interp_results_gdf from GeoDataFrame to GeoJson</span>
+<span class="n">geojson</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="s1">&#39;4326&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="n">geojson</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">geojson</span><span class="p">)</span>
+
+<span class="c1"># Reformat the interp_results_gdf for the plot</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">))</span>
+
+<span class="c1"># Rename the results columns as they will become the facet plot labels</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_area_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;ct_dasy_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;da_area_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;da_dasy_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,})</span>
+
+<span class="c1"># Combine all the results columns into one column labeled with a method column</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+            <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">],</span>
+            <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> 
+            <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;Error (%)&#39;</span><span class="p">)</span>
+
+<span class="c1"># Create the Plotly Express choropleth figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">choropleth</span><span class="p">(</span><span class="n">data_frame</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Areal Interpolation of 2016 Census Population Data to Ottawa, ON Neighborhoods&quot;</span><span class="p">,</span>
+                    <span class="n">locations</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+                    <span class="n">geojson</span><span class="o">=</span><span class="n">geojson</span><span class="p">,</span>
+                    <span class="n">featureidkey</span><span class="o">=</span><span class="s1">&#39;properties.nbhd_name&#39;</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Error (%)&#39;</span><span class="p">,</span>
+                    <span class="n">facet_col</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span>
+                    <span class="n">facet_col_wrap</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">hover_name</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+                    <span class="n">range_color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span>
+                    <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;Inferno&#39;</span><span class="p">,</span>
+                    <span class="c1">#color_discrete_sequence= px.colors.sequential.Plasma,</span>
+                    <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;mercator&#39;</span><span class="p">,</span>
+                    <span class="n">fitbounds</span><span class="o">=</span><span class="s2">&quot;locations&quot;</span><span class="p">,</span>
+                    <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">mapbox_style</span><span class="o">=</span><span class="s2">&quot;open-street-map&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">for_each_annotation</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:5_facet_map.png" class="image"><img alt="5 facet map.png" src="/CUOSGwiki/images/d/d1/5_facet_map.png" decoding="async" width="1000" height="901" /></a>
+</p>
+<div class="cell markdown">
+<p>That's a pretty slick set of maps, if I can say so myself! Each map can be explored by changing the zoom level and by hovering the cursor over different features (if you're viewing the interactive Jupyter notebook version of this tutorial).
+</p><p>There are some other limitations with Plotly though. While it does support tiled base maps through their MapBox figures (e.g., <code>px.choropleth_mapbox()</code>) it's not possible to create facet plots (i.e., side-by-side plots) with a tiled base map. Also, Plotly doesn't make it easy to represent the values as discrete classified bins instead of a continuous color scale. Instead, in the map above I've simply limited the <code>Error (%)</code> color bar range to 100 despite some neighborhoods having higher percent errors higher than 100. Feel free to adjust the <code>rangecolor=</code> argument to a different scale, if you so desire.
+</p><p>Another way to represent the results in an interactive map is through GeoPandas' <code>explore()</code> method. Like the Plotly maps, it's possible to change the zoom and inspect attributes of each feature by hovering the cursor over them. There's probably a way to organize these into subplots but I haven't figured that out yet.
+</p><p>In the cell below we can change the <code>column</code> argument to display a color-scaled representation of any of the columns in the <code>interp_results_gdf</code>. The classification scheme can also be changed using the <code>scheme</code> argument. See the <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.explore.html"><code>gdf.explore()</code> documentation</a> for the classification schemes and other parameters.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Visually Assess Percent Error of the Area Weighted Interpolation</span>
+<span class="c1"># ----------------------------------------------------------------</span>
+
+<span class="c1"># Uncomment one of the following percent error columns to display that its values in the map</span>
+<span class="n">column</span> <span class="o">=</span> <span class="s1">&#39;ct_area_interp_%_error&#39;</span> <span class="c1"># Source: Census Tracts | Method: Area Weighted</span>
+<span class="c1">#column=&#39;da_area_interp_%_error&#39; # Source: Dissemination Areas | Method: Area Weighted</span>
+<span class="c1">#column=&#39;ct_dasy_interp_%_error&#39; # Source: Census Tracts | Method: Dasymetric</span>
+<span class="c1">#column=&#39;da_dasy_interp_%_error&#39; # Source: Dissemination Areas | Method: Dasymetric</span>
+
+<span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;YlOrRd&#39;</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s1">&#39;JenksCaspall&#39;</span><span class="p">,</span>
+    <span class="n">legend_kwds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;colorbar&#39;</span><span class="p">:</span><span class="bp">False</span><span class="p">},</span>
+    <span class="n">style_kwds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:6_explore_map.png" class="image"><img alt="6 explore map.png" src="/CUOSGwiki/images/thumb/f/f6/6_explore_map.png/1200px-6_explore_map.png" decoding="async" width="1200" height="726" srcset="/CUOSGwiki/images/f/f6/6_explore_map.png 1.5x" /></a>
+</p>
+<div class="cell markdown">
+<p>Lastly, let's plot the interpolation results against the neighborhood population estimates using 1:1 scatter plots. We'll use Plotly again for this as its <code>px.scatter()</code> facet plots allow us to hover the cursor over the points in order to see their names and other information. Like the choropleth facet maps , the data needs to be reworked into the correct format using df.melt(). It's a lot of code but I think it's worth it.
+</p><p>Check out these links for information on Plotly scatter plots:
+</p>
+<ul><li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://plotly.com/python/line-and-scatter/">Plotly Scatter Plots</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://plotly.com/python-api-reference/generated/plotly.express.scatter"><code>px.scatter()</code> documentation</a></li></ul>
+<p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Create 1:1 Facet Plots using Plotly</span>
+<span class="c1"># -------------------------------------</span>
+
+<span class="c1"># Convert the interpolation results to a DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">))</span>
+
+<span class="c1"># Rename the results columns as they will become the facet plot labels</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_area_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;ct_dasy_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;da_area_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;da_dasy_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">})</span>
+
+<span class="c1"># Combine all the results columns into one column</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span> <span class="s1">&#39;nbhd_pop_est&#39;</span><span class="p">],</span>
+            <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">],</span>
+            <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> 
+            <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add a percent error column</span>
+<span class="n">estimated</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">]</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;nbhd_pop_est&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Create the Plotly Express Scatter figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_frame</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Areal Interpolation of 2016 Census Population Data to Ottawa, ON Neighborhoods&quot;</span><span class="p">,</span>
+                <span class="n">x</span><span class="o">=</span><span class="s1">&#39;nbhd_pop_est&#39;</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">,</span>
+                <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;%_error&#39;</span><span class="p">,</span>
+                <span class="n">facet_col</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span>
+                <span class="n">facet_col_wrap</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">hover_name</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+                <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">:</span> <span class="s1">&#39;Interpolated Population&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;nbhd_pop_est&#39;</span><span class="p">:</span> <span class="s1">&#39; Estimated Population&#39;</span><span class="p">},</span>
+                <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;Inferno&#39;</span><span class="p">,</span>
+                <span class="n">range_color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">])</span>
+
+<span class="c1"># Create the 1:1 line</span>
+<span class="n">line_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;nbhd_pop_est&#39;</span><span class="p">])])</span>
+<span class="n">line_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">]),</span> <span class="nb">min</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;nbhd_pop_est&#39;</span><span class="p">])])</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="p">[</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y4&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">)])</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">for_each_annotation</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:7_1to1_plot.png" class="image"><img alt="7 1to1 plot.png" src="/CUOSGwiki/images/0/04/7_1to1_plot.png" decoding="async" width="990" height="951" /></a>
+</p>
+<div class="cell markdown">
+<p>From these plots and maps we can see some shared characteristics of the results:
+</p>
+<ul><li>They all struggle with the Greenbelt neighborhood. This might be because it's quite large and borders many other neighborhood, or perhaps the census population data and the neighborhood population estimates diverge significantly over this area.</li>
+<li>Neighborhoods with small populations (e.g., Carleton University, Beechwood Cemetary, Notre-Dame Cemetary, Lebreton Development) show high percent errors, possibly due to having low populations while being surrounded by neighborhoods with high populations.</li>
+<li>Neighborhoods with high populations, (e.g.,Stittsville, Centretown, Old Barrhaven East and &quot;Bridlewood - Emerald Meadows&quot;) have interpolated populations that are consistently higher than the neighbourhood population estimates. Again, this might be due to underlying issues with the neighbourhood population estimates.</li>
+<li>&quot;Stonebridge - Half Moon Bay - Heart's Desire&quot; has a high percent error in all results - possibly due to the same issue as above.</li></ul>
+<p>From this one analysis, and again bearing in mind the issues with the neighborhood population estimates, it's pretty clear that the dasymetric interpolation methods is superior to the area weighted method but high resolution source data has an even more powerful contribution to the accuracy of the results.
+</p><p>So how can we eliminate the issues with the Ottawa Neighborhood Study population estimates and perform a more objective evaluation of the methods? Well, we can make our own population data!
+</p><p><br />
+</p>
+</div>
+<div class="cell markdown">
+<p><span id="part-2---areal-interpolation-of-synthetic-population-data"></span>
+</p>
+<h2><span class="mw-headline" id="Part_2_-_Areal_Interpolation_of_Synthetic_Population_Data">Part 2 - Areal Interpolation of Synthetic Population Data</span></h2>
+<p>In part 2 we will perform the same set of areal interpolations but this time the real population data will be replaced with synthetic population data. By doing this we will know the exact population of the census tracts, dissemination areas, and neighborhoods - allowing us to accurately compare the interpolated populations against the expected populations. A better picture should emerge of the differences between the area weighted and dasymetric interpolation methods, and the effect of the source data's scale.
+</p><p>Our steps in part 2 will be:
+</p>
+<ol><li>Generate the synthetic population points</li>
+<li>Count the synthetic population points</li>
+<li>Perform interpolation</li>
+<li>Assess the results</li></ol>
+<p><br />
+</p>
+</div>
+<div class="cell markdown">
+<p><span id="step-1-create-the-synthetic-population-points"></span>
+</p>
+<h3><span class="mw-headline" id="Step_1:_Create_the_Synthetic_Population_Points">Step 1: Create the Synthetic Population Points</span></h3>
+<p>We first need to generate a dataset containing a synthetic population. Ideally, we would have access to a dataset where every person in Ottawa is identified as a point at their dwelling but, because StatCan doesn't release this fine scale for privacy reasons, we will have to approximate it.
+</p><p>What we want to do is create a distribution of points that does a pretty good job of approximating the actual distribution of people within a city. It has to have a non-uniform density and be spatially limited to those areas where people actually live. Datasets that could help to approximate this include city land use zones, building footprints, and high resolution land cover maps. To keep things relatively simple here we will just do the following:
+</p>
+<ol><li>Clip the dissemination areas to the urban land cover type
+<ul><li>Tobler provides a handy function that extracts specific land cover types from a raster and then outputs a GeoDataFrame containing their extent: <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pysal.org/tobler/generated/tobler.dasymetric.extract_raster_features.html"><code>tobler.dasymetric.extract_raster_features()</code></a></li></ul></li>
+<li>Clip the clipped dissemination areas to Ottawa's land use zones which permit dwellings
+<ul><li>These land use zones come from <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://ottawa.ca/en/living-ottawa/laws-licences-and-permits/laws/law-z/planning-development-and-construction/maps-and-zoning/zoning-law-no-2008-250/zoning-law-2008-250-consolidation/part-1-administration-interpretation-and-definitions-sections-1-54#section-29-46-interpreting-zoning-information">Section 35 of the City of Ottawa's zoning definitions</a></li>
+<li>Nineteen zones where dwelling units are permitted have been selected (see the code cell below)</li>
+<li>A more rigorous approach would consider all of the exceptions granted in the subzones but those exceptions will be ignored here</li></ul></li>
+<li>Generate a number of randomly distributed points within each dissemination area where the number of those points are based off of the 2016 census population. We don't have to based these numbers off the 2016 census data but it will help to produce a realisitc density</li>
+<li>Count the number of points that fall within each census tract, dissemination area, and neighborhood</li></ol>
+<p>Generating a reasonably large population of synthetic points within these clipped dissemination areas can take quite a long time (about 15 mins for 93433 points on my old MacBook Pro). If you want to avoid the processing time just run the cell immediately below this one (&quot;Skip the point generation and just read them from a file&quot;) and then jump ahead to the cell called &quot;Count the points in each census tract&quot;. Or, if you want to make your own points then skip the next cell and run all of the others.
+</p><p>Ok, let's get to it.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Skip the point generation and just read them from a file</span>
+<span class="c1"># --------------------------------------------------------</span>
+
+<span class="n">points_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;data/points.gpkg&#39;</span><span class="p">)</span>
+
+<span class="c1"># Optional: uncomment the line below to explore the points</span>
+<span class="c1">#points_gdf.explore()</span>
+</pre></div>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Create clipped dissemination areas</span>
+<span class="c1"># ----------------------------------</span>
+
+<span class="c1"># Extract the urban landcover (pixel value of 17) from the landcover raster</span>
+<span class="n">raster_path</span> <span class="o">=</span> <span class="s1">&#39;data/ottawa_landcover.tif&#39;</span>
+<span class="n">urban_landcover_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">dasymetric</span><span class="o">.</span><span class="n">extract_raster_features</span><span class="p">(</span><span class="n">gdf</span><span class="o">=</span><span class="n">nbhd_gdf</span><span class="p">,</span>
+                                                                <span class="n">raster_path</span><span class="o">=</span><span class="n">raster_path</span><span class="p">,</span>
+                                                                <span class="n">pixel_values</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+
+<span class="n">urban_landcover_gdf</span> <span class="o">=</span> <span class="n">urban_landcover_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">32618</span><span class="p">)</span>
+
+<span class="c1"># Read the Ottawa zoning</span>
+<span class="n">zoning_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;data/ottawa_zoning.gpkg&#39;</span><span class="p">)</span>
+
+<span class="c1"># Only keep the zones that residents can live in</span>
+<span class="n">people_zones</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R1&#39;</span><span class="p">,</span> <span class="s1">&#39;R2&#39;</span><span class="p">,</span> <span class="s1">&#39;R3&#39;</span><span class="p">,</span> <span class="s1">&#39;R4&#39;</span><span class="p">,</span> <span class="s1">&#39;R5&#39;</span><span class="p">,</span> <span class="s1">&#39;RM&#39;</span><span class="p">,</span> <span class="s1">&#39;LC&#39;</span><span class="p">,</span> <span class="s1">&#39;GM&#39;</span><span class="p">,</span> <span class="s1">&#39;TM&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;AM&#39;</span><span class="p">,</span><span class="s1">&#39;MC&#39;</span><span class="p">,</span><span class="s1">&#39;MD&#39;</span><span class="p">,</span> <span class="s1">&#39;AG&#39;</span><span class="p">,</span> <span class="s1">&#39;RR&#39;</span><span class="p">,</span><span class="s1">&#39;RU&#39;</span><span class="p">,</span><span class="s1">&#39;VM&#39;</span><span class="p">,</span> <span class="s1">&#39;V1&#39;</span><span class="p">,</span><span class="s1">&#39;V2&#39;</span><span class="p">,</span><span class="s1">&#39;V3&#39;</span><span class="p">]</span>
+
+<span class="n">zoning_gdf</span> <span class="o">=</span> <span class="n">zoning_gdf</span><span class="p">[</span><span class="n">zoning_gdf</span><span class="p">[</span><span class="s1">&#39;zone_main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">people_zones</span><span class="p">)]</span>
+
+<span class="c1"># Clip the dissemination areas to the urban landcover and the zoning</span>
+<span class="n">da_clip_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">gdf</span><span class="o">=</span><span class="n">da_gdf</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">zoning_gdf</span><span class="p">)</span>
+<span class="n">da_clip_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">gdf</span><span class="o">=</span><span class="n">da_clip_gdf</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">urban_landcover_gdf</span><span class="p">)</span>
+
+<span class="c1"># ~2 mins ; ignore warnings</span>
+</pre></div>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Define function to generate a specific number of random points in a polygon</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">random_points</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">n_column</span><span class="p">,</span> <span class="n">geom_column</span><span class="p">,</span> <span class="n">divisor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Returns n number of random points within GeoDataFrame polygons.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    ----------</span>
+<span class="sd">    row : Pandas Series</span>
+<span class="sd">        Must contain:</span>
+<span class="sd">        - A column containing the desired number of points in each polygons</span>
+<span class="sd">        - A column containing polygon geometry</span>
+
+<span class="sd">    n_column : string</span>
+<span class="sd">        - The name of the column that contains the desired number of points</span>
+
+<span class="sd">    geom_column : string</span>
+<span class="sd">        - The name of the column that contains the GeoDataBase geometry</span>
+
+<span class="sd">    divisor : int (default = 1)</span>
+<span class="sd">        - A value used to reduce the number of points (n2 = n1 / divisor)</span>
+<span class="sd">        - Good for shortening computation time</span>
+
+<span class="sd">    min_n : int (default = 1)</span>
+<span class="sd">        - The minimum number of points in polygon</span>
+<span class="sd">        - Good for forcing all polygons to have at least 1 point</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">    ------</span>
+<span class="sd">    This function is very very slow when trying to generate points in polygons that</span>
+<span class="sd">    have areas that are much smaller than their extent (e.g a C-shaped polygon)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># Read the polygon and its bounds</span>
+    <span class="n">polygon</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">geom_column</span><span class="p">]</span>
+    <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">bounds</span>
+
+    <span class="c1"># Determine the number of points to generate in the polygon</span>
+    <span class="n">n_points</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="n">n_column</span><span class="p">]</span> <span class="o">/</span> <span class="n">divisor</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_points</span> <span class="o">&lt;</span> <span class="n">min_n</span><span class="p">:</span>
+        <span class="n">n_points</span> <span class="o">=</span> <span class="n">min_n</span>
+    
+    <span class="c1"># Generate the points and put them in a list</span>
+    <span class="n">points_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">points_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_points</span><span class="p">:</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">point</span><span class="o">.</span><span class="n">intersects</span><span class="p">(</span><span class="n">polygon</span><span class="p">):</span>
+            <span class="n">points_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">points_list</span>
+</pre></div>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Generate points in the clipped dissemination areas</span>
+<span class="c1"># --------------------------------------------------</span>
+
+<span class="c1"># Generate the random points</span>
+<span class="n">points_srs</span> <span class="o">=</span> <span class="n">da_clip_gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">random_points</span><span class="p">,</span> 
+                            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;da_pop_2016&#39;</span><span class="p">,</span> <span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># The output is a pd.Series so convert it to a list</span>
+<span class="n">points_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">points_srs</span><span class="p">)</span>
+
+<span class="c1"># Flatten the list of lists so each item in the list is a point</span>
+<span class="n">points_flat_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">points_list</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
+        <span class="n">points_flat_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+<span class="c1"># Create a GeoDataFrame of the synthetic points using the flat list as the geometry column</span>
+<span class="n">points_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">points_flat_list</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;EPSG:32618&quot;</span><span class="p">)</span>
+
+<span class="c1"># If you made new points and want to save them,</span>
+<span class="c1"># uncomment the line below to write them to a file</span>
+<span class="c1">#points_gdf.to_file(&#39;data/new_points_gdf.gpkg&#39;, driver=&#39;GPKG&#39;)</span>
+
+<span class="c1"># Optional: uncomment the line below to explore the points</span>
+<span class="c1">#points_gdf.explore()</span>
+
+<span class="c1"># ~15-20 mins if divisor=10</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="step-2-count-the-synthetic-population-points"></span>
+</p>
+<h3><span class="mw-headline" id="Step_2:_Count_the_Synthetic_Population_Points">Step 2: Count the Synthetic Population Points</span></h3>
+<p>We now have a GeoDataFrame containing the synthetic population (<code>points_gdf</code>). Each point is a synthetic person that lives where dwellings are allowed within the urban land cover class. Feel free to add a new cell and use <code>points_gdf.explore()</code> to explore them.
+</p><p>We can count how many fall into each census tract, dissemination area, and neighborhood by doing the following:
+</p>
+<ol><li>Using the GeoPandas <code>gpd.sjoin()</code> method to perform a spatial join between the points and the source &amp; target geometries</li>
+<li>Assigning a value of 1 to each point</li>
+<li>Grouping the features by their id/name and summing them.</li>
+<li>Merging the sums of each group to the source/target geometries.</li></ol>
+<p>To see how exactly this works feel free to split the cells below into single expressions and then use <code>gdf.head()</code> on the intermediate GeoDataFrames.
+</p><p>For more information on these operations check out the documentation:
+</p>
+<ul><li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://geopandas.org/en/stable/docs/reference/api/geopandas.sjoin.html"><code>gpd.sjoin()</code></a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html"><code>pd.groupby()</code></a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.groupby.GroupBy.sum.html"><code>pd.groupby.sum()</code></a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.merge.html"><code>pd.merge</code></a></li></ul>
+<p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Count the points in each census tract</span>
+<span class="c1"># -------------------------------------</span>
+
+<span class="c1"># Spatial join of points_gdf to ct_gdf</span>
+<span class="n">ct_points_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">points_gdf</span><span class="p">,</span> <span class="n">ct_gdf</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s1">&#39;intersects&#39;</span><span class="p">)</span>
+
+<span class="c1"># Count the points that fall in each census tract</span>
+<span class="n">ct_points_gdf</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">ct_points_sums_gdf</span> <span class="o">=</span> <span class="n">ct_points_gdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;ctuid&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="c1"># Merge the counts with the census tracts</span>
+<span class="n">ct_synth_gdf</span> <span class="o">=</span> <span class="n">ct_gdf</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ct_points_sums_gdf</span><span class="p">[[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;ctuid&#39;</span><span class="p">)</span>
+
+<span class="c1"># Print the total number of points and the first 5 rows</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Total points&#39;</span><span class="p">,</span> <span class="n">ct_synth_gdf</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="n">ct_synth_gdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:8_ct_points_count.png" class="image"><img alt="8 ct points count.png" src="/CUOSGwiki/images/2/2c/8_ct_points_count.png" decoding="async" width="690" height="201" /></a>
+</p>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Count the points in each dissemination area</span>
+<span class="c1"># -------------------------------------------</span>
+
+<span class="c1"># Spatial join of points_gdf to da_gdf</span>
+<span class="n">da_points_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">points_gdf</span><span class="p">,</span> <span class="n">da_gdf</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s1">&#39;intersects&#39;</span><span class="p">)</span>
+
+<span class="c1"># Count the points that fall in each dissemination areas</span>
+<span class="n">da_points_gdf</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">da_points_sums_gdf</span> <span class="o">=</span> <span class="n">da_points_gdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;dauid&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="c1"># Merge the counts with the census tracts</span>
+<span class="n">da_synth_gdf</span> <span class="o">=</span> <span class="n">da_gdf</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">da_points_sums_gdf</span><span class="p">[[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;dauid&#39;</span><span class="p">)</span>
+
+<span class="c1"># Print the total number of points and the first 5 rows</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Total points&#39;</span><span class="p">,</span> <span class="n">da_synth_gdf</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="n">da_synth_gdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:9_da_points_count.png" class="image"><img alt="9 da points count.png" src="/CUOSGwiki/images/3/3a/9_da_points_count.png" decoding="async" width="780" height="197" /></a>
+</p>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Count the points in each neighborhood</span>
+<span class="c1"># -------------------------------------</span>
+
+<span class="c1"># Spatial join of synthetic points to neighborhoods</span>
+<span class="n">nbhd_points_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">points_gdf</span><span class="p">,</span> <span class="n">nbhd_gdf</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s1">&#39;intersects&#39;</span><span class="p">)</span>
+
+<span class="c1"># Count the points that fall in each neighborhood</span>
+<span class="n">nbhd_points_gdf</span><span class="p">[</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">nbhd_points_sums_gdf</span> <span class="o">=</span> <span class="n">nbhd_points_gdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="c1"># Merge the counts with the neighborhoods</span>
+<span class="n">nbhd_synth_gdf</span> <span class="o">=</span> <span class="n">nbhd_gdf</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">nbhd_points_sums_gdf</span><span class="p">[[</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">)</span>
+
+<span class="c1"># Print the total number of points and the first 5 rows</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Total points&#39;</span><span class="p">,</span> <span class="n">nbhd_synth_gdf</span><span class="p">[</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="n">nbhd_synth_gdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:10_nbhd_points_count.png" class="image"><img alt="10 nbhd points count.png" src="/CUOSGwiki/images/4/44/10_nbhd_points_count.png" decoding="async" width="850" height="201" /></a>
+</p>
+<div class="cell markdown">
+<p><span id="step-3-areal-interpolation-of-the-synthetic-population-data"></span>
+</p>
+<h3><span class="mw-headline" id="Step_3:_Areal_Interpolation_of_the_Synthetic_Population_Data">Step 3: Areal Interpolation of the Synthetic Population Data</span></h3>
+<p><span id="area-weighted-interpolation-of-census-tracts-and-dissemination-areas"></span>
+</p>
+<h4><span class="mw-headline" id="Area_Weighted_Interpolation_of_Census_Tracts_and_Dissemination_Areas">Area Weighted Interpolation of Census Tracts and Dissemination Areas</span></h4>
+<p>The synthetic census tract and dissemination areas population data can now be used as the source for area weighted and dasymetric interpolations. We will repeat all of the steps that we took in Part 1 but this time with synthetic data.
+</p><p>Because these cells are are essentially copies of the cells from Part 1 there won't be any commentary until the very end. If you're unsure of what is happening in any of these cells just refer to its twin above.
+</p><p><br />
+</p>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Area weighted interpolation: synthetic census tracts to neighborhoods</span>
+<span class="c1"># ---------------------------------------------------------------------</span>
+
+<span class="n">ct_area_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">area_weighted</span><span class="o">.</span><span class="n">area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">ct_synth_gdf</span><span class="p">,</span> 
+                                                        <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_synth_gdf</span><span class="p">,</span>
+                                                        <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">ct_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ct_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">ct_area_interp_gdf</span> <span class="o">=</span> <span class="n">ct_area_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">:</span><span class="s1">&#39;ct_area_interp_est&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Area weighted interpolation: synthetic dissemination areas to neighborhoods</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="n">da_area_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">area_weighted</span><span class="o">.</span><span class="n">area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">da_synth_gdf</span><span class="p">,</span> 
+                                                        <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_synth_gdf</span><span class="p">,</span>
+                                                        <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">da_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da_area_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">da_area_interp_gdf</span> <span class="o">=</span> <span class="n">da_area_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">:</span><span class="s1">&#39;da_area_interp_est&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="dasymetric-interpolation-of-census-tracts-and-dissemination-areas"></span>
+</p>
+<h4><span class="mw-headline" id="Dasymetric_Interpolation_of_Census_Tracts_and_Dissemination_Areas_2">Dasymetric Interpolation of Census Tracts and Dissemination Areas</span></h4>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Dasymetric interpolation: synthetic census tracts + urban landover to neighborhoods</span>
+<span class="c1">#------------------------------------------------------------------------------------</span>
+
+<span class="c1"># Perform dasymetric interpolation</span>
+<span class="n">ct_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">dasymetric</span><span class="o">.</span><span class="n">masked_area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">ct_synth_gdf</span><span class="p">,</span> 
+                                                            <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_synth_gdf</span><span class="p">,</span>
+                                                            <span class="n">raster</span><span class="o">=</span><span class="s1">&#39;data/ottawa_landcover.tif&#39;</span><span class="p">,</span>
+                                                            <span class="n">codes</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">],</span>
+                                                            <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">ct_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ct_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">ct_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">ct_dasy_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_synth_pop&#39;</span><span class="p">:</span><span class="s1">&#39;ct_dasy_interp_est&#39;</span><span class="p">})</span>
+
+<span class="c1"># ~30 s ; ignore warnings</span>
+</pre></div>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Dasymetric interpolation: synthetic dissemination areas + urban landover to neighborhoods</span>
+<span class="c1">#------------------------------------------------------------------------------------------</span>
+
+<span class="c1"># Perform dasymetric interpolation</span>
+<span class="n">da_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">tobler</span><span class="o">.</span><span class="n">dasymetric</span><span class="o">.</span><span class="n">masked_area_interpolate</span><span class="p">(</span><span class="n">source_df</span><span class="o">=</span><span class="n">da_synth_gdf</span><span class="p">,</span> 
+                                                            <span class="n">target_df</span><span class="o">=</span><span class="n">nbhd_synth_gdf</span><span class="p">,</span>
+                                                            <span class="n">raster</span><span class="o">=</span><span class="s1">&#39;data/ottawa_landcover.tif&#39;</span><span class="p">,</span>
+                                                            <span class="n">codes</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">],</span>
+                                                            <span class="n">extensive_variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">])</span>
+
+<span class="c1"># Round the interpolation results to the nearest integer and change the type to integer</span>
+<span class="c1"># (Population counts must be integers)</span>
+<span class="n">da_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da_dasy_interp_gdf</span><span class="p">[</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Rename the results column for clarity later</span>
+<span class="n">da_dasy_interp_gdf</span> <span class="o">=</span> <span class="n">da_dasy_interp_gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;da_synth_pop&#39;</span><span class="p">:</span><span class="s1">&#39;da_dasy_interp_est&#39;</span><span class="p">})</span>
+
+<span class="c1"># ~1.5 mins ; ignore warnings</span>
+</pre></div>
+</div>
+<div class="cell markdown">
+<p><span id="step-4-assess-the-interpolation-results"></span>
+</p>
+<h3><span class="mw-headline" id="Step_4:_Assess_the_Interpolation_Results_2">Step 4: Assess the Interpolation Results</span></h3>
+</div>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Merge the results for comparison</span>
+<span class="c1">#---------------------------------</span>
+
+<span class="c1"># Create a list of the GeoDataFrames (drop the redundant geometry)</span>
+<span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="n">nbhd_synth_gdf</span><span class="p">,</span>
+        <span class="n">ct_area_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),</span>
+        <span class="n">ct_dasy_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),</span>
+        <span class="n">da_area_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),</span>
+        <span class="n">da_dasy_interp_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),]</span>
+
+<span class="c1"># Concatenate the GeoDataFrames</span>
+<span class="n">interp_results_gdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># View a sample of the interpolation results GeoDataFrame (without the geometry column)</span>
+<span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:11_sample_merged_results.png" class="image"><img alt="11 sample merged results.png" src="/CUOSGwiki/images/d/d8/11_sample_merged_results.png" decoding="async" width="1050" height="281" /></a>
+</p>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Evaluate Results</span>
+<span class="c1"># ----------------</span>
+
+<span class="c1"># Assign the interpolation results columns to their own variables for clarity</span>
+<span class="n">ct_area_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_area_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: census tracts | method: area weighted</span>
+<span class="n">ct_dasy_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_dasy_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: census tracts  method: dasymetric</span>
+<span class="n">da_area_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_area_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: dissemination areas | method: area weighted</span>
+<span class="n">da_dasy_est</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_dasy_interp_est&#39;</span><span class="p">]</span> <span class="c1"># Source: dissemination areas | method: dasymetric</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">]</span>        <span class="c1"># Source: neighborhoods</span>
+
+<span class="c1"># Percent Error - create new columns in interp_results_gdf</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_area_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;ct_dasy_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_area_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">interp_results_gdf</span><span class="p">[</span><span class="s1">&#39;da_dasy_interp_%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Other statistics - create DataFrame of statistics</span>
+<span class="n">interp_stats_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Interpolation Method&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Area Weighted&#39;</span><span class="p">,</span><span class="s1">&#39;Area Weighted&#39;</span><span class="p">,</span>
+                                                        <span class="s1">&#39;Dasymetric&#39;</span><span class="p">,</span> <span class="s1">&#39;Dasymetric&#39;</span><span class="p">],</span>
+                                <span class="s1">&#39;Source Geographies&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Census Tracts&#39;</span><span class="p">,</span> <span class="s1">&#39;Dissemination Areas&#39;</span><span class="p">,</span>
+                                                       <span class="s1">&#39;Census Tracts&#39;</span><span class="p">,</span> <span class="s1">&#39;Dissemination Areas&#39;</span><span class="p">],</span>
+                                <span class="s1">&#39;RMSE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">rmse</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">rmse</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">rmse</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">rmse</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;NRMSE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">nrmse</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">nrmse</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">nrmse</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">nrmse</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>            
+                                <span class="s1">&#39;MBE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">mbe</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mbe</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mbe</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mbe</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;MAE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">mae</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mae</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mae</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">mae</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">r_value</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)],</span>
+                                <span class="s1">&#39;r2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">r_value</span><span class="p">(</span><span class="n">ct_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_area_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">ct_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">r_value</span><span class="p">(</span><span class="n">da_dasy_est</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">]})</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">interp_stats_df</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:12_stats.png" class="image"><img alt="12 stats.png" src="/CUOSGwiki/images/b/b5/12_stats.png" decoding="async" width="670" height="146" /></a>
+</p>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Plot the Percent Error of Both Methods using a Plotly Facet Map</span>
+<span class="c1"># ---------------------------------------------------------------</span>
+
+<span class="c1"># Convert interp_results_gdf from GeoDataFrame to GeoJson</span>
+<span class="n">geojson</span> <span class="o">=</span> <span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="s1">&#39;4326&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="n">geojson</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">geojson</span><span class="p">)</span>
+
+<span class="c1"># Reformat the interp_results_gdf for the plot</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">))</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_area_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;ct_dasy_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;da_area_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;da_dasy_interp_%_error&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">})</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+            <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">],</span>
+            <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> 
+            <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;Error (%)&#39;</span><span class="p">)</span>
+
+<span class="c1"># Create the Plotly Express choropleth figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">choropleth</span><span class="p">(</span><span class="n">data_frame</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Areal Interpolation of Synthetic Population Data to Ottawa, ON Neighborhoods&quot;</span><span class="p">,</span>
+                    <span class="n">locations</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+                    <span class="n">geojson</span><span class="o">=</span><span class="n">geojson</span><span class="p">,</span>
+                    <span class="n">featureidkey</span><span class="o">=</span><span class="s1">&#39;properties.nbhd_name&#39;</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Error (%)&#39;</span><span class="p">,</span>
+                    <span class="n">facet_col</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span>
+                    <span class="n">facet_col_wrap</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">hover_name</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+                    <span class="n">range_color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span>
+                    <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;Inferno&#39;</span><span class="p">,</span>
+                    <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;mercator&#39;</span><span class="p">,</span>
+                    <span class="n">fitbounds</span><span class="o">=</span><span class="s2">&quot;locations&quot;</span><span class="p">,</span>
+                    <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+         
+<span class="n">fig</span><span class="o">.</span><span class="n">for_each_annotation</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:13_facet_map.png" class="image"><img alt="13 facet map.png" src="/CUOSGwiki/images/0/0a/13_facet_map.png" decoding="async" width="980" height="901" /></a>
+</p>
+<div class="cell code">
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="c1"># Create 1:1 Facet Plots using Plotly</span>
+<span class="c1"># -----------------------------------</span>
+
+<span class="c1"># Convert the interpolation results to a DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">interp_results_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">))</span>
+
+<span class="c1"># Rename the results columns as they will become the facet plot labels</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ct_area_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;ct_dasy_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;da_area_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;da_dasy_interp_est&#39;</span><span class="p">:</span><span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">})</span>
+
+<span class="c1"># Combine all the results columns into one column</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span> <span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">],</span>
+            <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Census Tracts &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Area Weighted&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Source: Dissemination Areas &lt;br&gt; Method: Dasymetric&#39;</span><span class="p">],</span>
+            <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> 
+            <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add a percent error column</span>
+<span class="n">estimated</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">]</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;%_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent_error</span><span class="p">(</span><span class="n">estimated</span><span class="p">,</span> <span class="n">expected</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Create the Plotly Express Scatter figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_frame</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Areal Interpolation of Synthetic Population Data to Ottawa, ON Neighborhoods&quot;</span><span class="p">,</span>
+                <span class="n">x</span><span class="o">=</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">,</span>
+                <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;%_error&#39;</span><span class="p">,</span>
+                <span class="n">facet_col</span><span class="o">=</span><span class="s1">&#39;method&#39;</span><span class="p">,</span>
+                <span class="n">facet_col_wrap</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">hover_name</span><span class="o">=</span><span class="s1">&#39;nbhd_name&#39;</span><span class="p">,</span>
+                <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">:</span> <span class="s1">&#39;Interpolated Population&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">:</span> <span class="s1">&#39; Estimated Population&#39;</span><span class="p">},</span>
+                <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;Inferno&#39;</span><span class="p">,</span>
+                <span class="n">range_color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">])</span>
+
+<span class="c1"># Create the 1:1 line</span>
+<span class="n">line_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">])])</span>
+<span class="n">line_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;interp_pop_est&#39;</span><span class="p">]),</span> <span class="nb">min</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;nbhd_synth_pop&#39;</span><span class="p">])])</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="p">[</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y4&#39;</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">line_min</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">line_max</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">)])</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">for_each_annotation</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><a href="/CUOSGwiki/index.php/File:14_1to1_plot.png" class="image"><img alt="14 1to1 plot.png" src="/CUOSGwiki/images/0/07/14_1to1_plot.png" decoding="async" width="1000" height="951" /></a>
+</p>
+<div class="cell markdown">
+<p><span id="conclusions"></span>
+</p>
+<h2><span class="mw-headline" id="Conclusion">Conclusion</span></h2>
+<p>Looking at the statistical and visual representations of the synthetic results we can see a familiar pattern emerge. The error and correlation values show that when choosing between census tracts and dissemination areas the latter is the better choice. Also, when comparing between the two different approaches to interpolation, the dasymetric method is superior that the simple area weighted method. Bear in mind, the model in Part 2 is quite over-fit as we used the same land cover raster for the dasymetric interpolation and to create the bounds within which the synthetic points were generated - in reality there would quite a bit more variation. Despite this issue, I believe we can still conclude that using the finest spatial resolution of source data, whether through the choice geometries, or through the contribution of secondary information such as land cover, will give the best results when performing areal interpolation.
+</p><p>Where do we go from here? Well, other areal interpolation methods exits, for example Tobler offers functions for model-based and pycnophylactic interpolation, so future exercises could examine those methods and how they compare. It's likely that by using higher quality secondary data and taking more spatial considerations into account, the results can be improved even further.
+</p><p>I hope that this tutorial was interesting and has helped to expand your familiarity with areal interpolation, Tobler, Pandas, GeoPandas, and Plotly. If you want to propose any changes, feel free to submit a pull request to this tutorial's <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://github.com/johnofoster/areal_interpolation_tutorial">github repository</a> or find me at my <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://twitter.com/FrothyFoster">Twitter account</a>.
+</p><p><br />
+</p>
+</div>
+<!-- 
+NewPP limit report
+Cached time: 20220109052815
+Cache expiry: 86400
+Dynamic content: false
+Complications: []
+CPU time usage: 0.125 seconds
+Real time usage: 2.931 seconds
+Preprocessor visited node count: 330/1000000
+Preprocessor generated node count: 0/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 125208/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key foss4gwiki2-osg_:pcache:idhash:4070-0!canonical and timestamp 20220109052812 and revision id 18535
+ -->
+</div></div><div class="printfooter">
+Retrieved from "<a dir="ltr" href="https://dges.carleton.ca/CUOSGwiki/index.php?title=Areal_Interpolation_in_Python_Using_Tobler&amp;oldid=18535">https://dges.carleton.ca/CUOSGwiki/index.php?title=Areal_Interpolation_in_Python_Using_Tobler&amp;oldid=18535</a>"</div>
+<div id="catlinks" class="catlinks catlinks-allhidden" data-mw="interface"></div><!-- end content --><div class="visualClear"></div></div></div><div class="visualClear"></div></div><div id="column-one" lang="en-CA" dir="ltr"><h2>Navigation menu</h2><div role="navigation" class="portlet" id="p-cactions" aria-labelledby="p-cactions-label"><h3 id="p-cactions-label" lang="en-CA" dir="ltr">Page actions</h3><div class="pBody"><ul lang="en-CA" dir="ltr"><li id="ca-nstab-main" class="selected"><a href="/CUOSGwiki/index.php/Areal_Interpolation_in_Python_Using_Tobler" title="View the content page [c]" accesskey="c">Page</a></li><li id="ca-talk" class="new"><a href="/CUOSGwiki/index.php?title=Talk:Areal_Interpolation_in_Python_Using_Tobler&amp;action=edit&amp;redlink=1" rel="discussion" title="Discussion about the content page (page does not exist) [t]" accesskey="t">Discussion</a></li><li id="ca-viewsource"><a href="/CUOSGwiki/index.php?title=Areal_Interpolation_in_Python_Using_Tobler&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li><li id="ca-history"><a href="/CUOSGwiki/index.php?title=Areal_Interpolation_in_Python_Using_Tobler&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li></ul></div></div><div role="navigation" class="portlet" id="p-cactions-mobile" aria-labelledby="p-cactions-mobile-label"><h3 id="p-cactions-mobile-label" lang="en-CA" dir="ltr">Page actions</h3><div class="pBody"><ul lang="en-CA" dir="ltr"><li id="ca-nstab-main-mobile" class="selected"><a href="/CUOSGwiki/index.php/Areal_Interpolation_in_Python_Using_Tobler" title="Page">Page</a></li><li id="ca-talk-mobile" class="new"><a href="/CUOSGwiki/index.php?title=Talk:Areal_Interpolation_in_Python_Using_Tobler&amp;action=edit&amp;redlink=1" rel="discussion" title=" (page does not exist)">Discussion</a></li><li id="ca-more"><a href="#p-cactions">More</a></li><li id="ca-tools"><a href="#p-tb" title="Tools">Tools</a></li></ul></div></div><div role="navigation" class="portlet" id="p-personal" aria-labelledby="p-personal-label"><h3 id="p-personal-label" lang="en-CA" dir="ltr">Personal tools</h3><div class="pBody"><ul lang="en-CA" dir="ltr"><li id="pt-login"><a href="/CUOSGwiki/index.php?title=Special:UserLogin&amp;returnto=Areal+Interpolation+in+Python+Using+Tobler" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li></ul></div></div><div class="portlet" id="p-logo" role="banner"><a href="/CUOSGwiki/index.php/Main_Page" class="mw-wiki-logo" title="Visit the main page"></a></div><div id="sidebar"><div role="navigation" class="portlet generated-sidebar" id="p-navigation" aria-labelledby="p-navigation-label"><h3 id="p-navigation-label" lang="en-CA" dir="ltr">Navigation</h3><div class="pBody"><ul lang="en-CA" dir="ltr"><li id="n-mainpage-description"><a href="/CUOSGwiki/index.php/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-recentchanges"><a href="/CUOSGwiki/index.php/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-randompage"><a href="/CUOSGwiki/index.php/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li><li id="n-help-mediawiki"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Contents" target="_blank">Help about MediaWiki</a></li></ul></div></div><div role="search" class="portlet" id="p-search"><h3 id="p-search-label" lang="en-CA" dir="ltr"><label for="searchInput">Search</label></h3><div class="pBody" id="searchBody"><form action="/CUOSGwiki/index.php" id="searchform"><input type="hidden" value="Special:Search" name="title"/><input type="search" name="search" placeholder="Search CUOSGwiki" title="Search CUOSGwiki [f]" accesskey="f" id="searchInput"/><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchGoButton" class="searchButton"/>  <input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton"/></form></div></div><div role="navigation" class="portlet" id="p-tb" aria-labelledby="p-tb-label"><h3 id="p-tb-label" lang="en-CA" dir="ltr">Tools</h3><div class="pBody"><ul lang="en-CA" dir="ltr"><li id="t-whatlinkshere"><a href="/CUOSGwiki/index.php/Special:WhatLinksHere/Areal_Interpolation_in_Python_Using_Tobler" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/CUOSGwiki/index.php/Special:RecentChangesLinked/Areal_Interpolation_in_Python_Using_Tobler" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-specialpages"><a href="/CUOSGwiki/index.php/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-print"><a href="/CUOSGwiki/index.php?title=Areal_Interpolation_in_Python_Using_Tobler&amp;printable=yes" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li><li id="t-permalink"><a href="/CUOSGwiki/index.php?title=Areal_Interpolation_in_Python_Using_Tobler&amp;oldid=18535" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/CUOSGwiki/index.php?title=Areal_Interpolation_in_Python_Using_Tobler&amp;action=info" title="More information about this page">Page information</a></li><li id="t-cite"><a href="/CUOSGwiki/index.php?title=Special:CiteThisPage&amp;page=Areal_Interpolation_in_Python_Using_Tobler&amp;id=18535" title="Information on how to cite this page">Cite this page</a></li></ul></div></div></div><a href="#sidebar" title="navigation" class="menu-toggle" id="sidebar-toggle"></a><a href="#p-personal" title="user tools" class="menu-toggle" id="p-personal-toggle"></a><a href="#globalWrapper" title="back to top" class="menu-toggle" id="globalWrapper-toggle"></a></div><!-- end of the left (by default at least) column --><div class="visualClear"></div><div id="footer" role="contentinfo" lang="en-CA" dir="ltr"><div id="f-copyrightico" class="footer-icons"><a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" alt="Creative Commons Attribution-ShareAlike 3.0 Unported" width="88" height="31"/></a></div><div id="f-poweredbyico" class="footer-icons"><a href="https://www.mediawiki.org/" target="_blank"><img src="/CUOSGwiki/resources/assets/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/CUOSGwiki/resources/assets/poweredby_mediawiki_132x47.png 1.5x, /CUOSGwiki/resources/assets/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a></div><ul id="f-list"><li id="lastmod"> This page was last edited on 7 January 2022, at 10:22.</li><li id="copyright">Content is available under <a class="external" rel="nofollow" href="https://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported</a> unless otherwise noted.</li><li id="privacy"><a href="/CUOSGwiki/index.php/CUOSGwiki:Privacy_policy" title="CUOSGwiki:Privacy policy">Privacy policy</a></li><li id="about"><a href="/CUOSGwiki/index.php/CUOSGwiki:About" title="CUOSGwiki:About">About CUOSGwiki</a></li><li id="disclaimer"><a href="/CUOSGwiki/index.php/CUOSGwiki:General_disclaimer" title="CUOSGwiki:General disclaimer">Disclaimers</a></li></ul></div></div>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.125","walltime":"2.931","ppvisitednodes":{"value":330,"limit":1000000},"ppgeneratednodes":{"value":0,"limit":1000000},"postexpandincludesize":{"value":0,"limit":2097152},"templateargumentsize":{"value":0,"limit":2097152},"expansiondepth":{"value":2,"limit":40},"expensivefunctioncount":{"value":0,"limit":100},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":125208,"limit":5000000},"timingprofile":["100.00%    0.000      1 -total"]},"cachereport":{"timestamp":"20220109052815","ttl":86400,"transientcontent":false}}});mw.config.set({"wgBackendResponseTime":2960});});</script></body><!-- Cached 20220109052815 -->
+</html>
